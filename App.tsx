@@ -7,8 +7,10 @@ import VideoOutputPanel from './components/VideoOutputPanel.tsx';
 import VideoPreview from './components/VideoPreview.tsx';
 import ProgressBar from './components/ProgressBar.tsx';
 import SceneEditor from './components/SceneEditor.tsx'; // New Component
+import AdvancedSettings from './components/AdvancedSettings.tsx';
+import AdvancedProgressBar from './components/AdvancedProgressBar.tsx';
 import { Scene, AspectRatio, GeminiSceneResponseItem } from './types.ts';
-import { APP_TITLE, DEFAULT_ASPECT_RATIO, API_KEY, IS_PREMIUM_USER } from './constants.ts';
+import { APP_TITLE, DEFAULT_ASPECT_RATIO, API_KEY, IS_PREMIUM_USER, VIDEO_TEMPLATES, AUDIO_EFFECTS, EXPORT_QUALITIES } from './constants.ts';
 import { analyzeNarrationWithGemini, generateImageWithImagen } from './services/geminiService.ts';
 import { processNarrationToScenes, fetchPlaceholderFootageUrl, normalizeGeminiScenes } from './services/videoService.ts';
 import { generateWebMFromScenes } from './services/videoRenderingService.ts';
@@ -48,6 +50,16 @@ const App: React.FC<AppProps> = ({ onBackToLanding }) => {
   const [isGeneratingPreview, setIsGeneratingPreview] = useState<boolean>(false);
   const [previewQuality, setPreviewQuality] = useState<'low' | 'medium' | 'high'>('medium');
   const [isPreviewOptimized, setIsPreviewOptimized] = useState<boolean>(false);
+  
+  // Advanced features state
+  const [selectedTemplate, setSelectedTemplate] = useState<keyof typeof VIDEO_TEMPLATES>('VIRAL');
+  const [selectedAudioEffect, setSelectedAudioEffect] = useState<keyof typeof AUDIO_EFFECTS>('NONE');
+  const [selectedQuality, setSelectedQuality] = useState<keyof typeof EXPORT_QUALITIES>('HD');
+  const [showAdvancedSettings, setShowAdvancedSettings] = useState<boolean>(false);
+  const [currentStage, setCurrentStage] = useState<string>('Ready');
+  const [currentStep, setCurrentStep] = useState<number>(0);
+  const [totalSteps, setTotalSteps] = useState<number>(0);
+  const [estimatedTime, setEstimatedTime] = useState<number>(0);
 
   const [isTTSEnabled, setIsTTSEnabled] = useState<boolean>(premiumUser);
   const [ttsPlaybackStatus, setTTSPlaybackStatus] = useState<'idle' | 'playing' | 'paused' | 'ended'>('idle');
@@ -331,6 +343,18 @@ const App: React.FC<AppProps> = ({ onBackToLanding }) => {
     
     setProgressMessage(fullMessage);
     setProgressValue(Math.min(100, Math.max(0, Math.round(overallProgress * 100))));
+    
+    // Update advanced progress tracking
+    setCurrentStage(stage.charAt(0).toUpperCase() + stage.slice(1));
+    if (current !== undefined) setCurrentStep(current);
+    if (total !== undefined) setTotalSteps(total);
+    
+    // Estimate remaining time based on progress
+    if (valueWithinStage > 0 && total !== undefined) {
+      const estimatedTotal = total * 2; // Rough estimate
+      const remaining = Math.max(0, estimatedTotal - (current || 0));
+      setEstimatedTime(remaining);
+    }
   }, [addWarning]);
 
 
@@ -757,7 +781,16 @@ const App: React.FC<AppProps> = ({ onBackToLanding }) => {
             />
           </div>
           <div className="p-4 sm:p-6 bg-neutral-800/70 backdrop-blur-lg border border-neutral-600 rounded-2xl shadow-lg">
-             <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-white" style={{ fontFamily: 'Fira Code' }}>2. Configure & Generate</h2>
+             <div className="flex items-center justify-between mb-4">
+               <h2 className="text-xl sm:text-2xl font-semibold text-white" style={{ fontFamily: 'Fira Code' }}>2. Configure & Generate</h2>
+               <button
+                 onClick={() => setShowAdvancedSettings(true)}
+                 className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors flex items-center space-x-2"
+               >
+                 <span>⚙️</span>
+                 <span>Advanced</span>
+               </button>
+             </div>
             <Controls
               aspectRatio={aspectRatio}
               onAspectRatioChange={(ratio) => {
@@ -833,7 +866,15 @@ const App: React.FC<AppProps> = ({ onBackToLanding }) => {
       )}
 
       {((isGeneratingScenes || isRenderingVideo || isGeneratingPreview)) && progressValue >= 0 && ( // Show progress if value is 0 or more
-        <div className="w-full max-w-3xl mt-6">
+        <div className="w-full max-w-3xl mt-6 space-y-4">
+          <AdvancedProgressBar
+            progress={progressValue / 100}
+            stage={currentStage}
+            currentStep={currentStep}
+            totalSteps={totalSteps}
+            estimatedTime={estimatedTime}
+            isGenerating={isGeneratingScenes || isRenderingVideo}
+          />
           <ProgressBar progress={progressValue} message={progressMessage} />
         </div>
       )}
@@ -843,6 +884,18 @@ const App: React.FC<AppProps> = ({ onBackToLanding }) => {
           <strong>Error:</strong> {error}
           <button onClick={() => setError(null)} className="ml-4 px-2 py-1 text-xs bg-red-700 hover:bg-red-600 rounded">Dismiss</button>
         </div>
+      )}
+
+      {showAdvancedSettings && (
+        <AdvancedSettings
+          selectedTemplate={selectedTemplate}
+          selectedAudioEffect={selectedAudioEffect}
+          selectedQuality={selectedQuality}
+          onTemplateChange={setSelectedTemplate}
+          onAudioEffectChange={setSelectedAudioEffect}
+          onQualityChange={setSelectedQuality}
+          onClose={() => setShowAdvancedSettings(false)}
+        />
       )}
       {warnings.length > 0 && (
         <div className="w-full max-w-3xl mt-4 p-4 bg-yellow-700 border border-yellow-600 text-yellow-100 rounded-md shadow-lg" role="status">
