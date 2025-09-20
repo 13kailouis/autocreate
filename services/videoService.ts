@@ -5,7 +5,8 @@ import {
   AVERAGE_WORDS_PER_SECOND,
   MAX_SCENE_DURATION_SECONDS,
   MIN_SCENE_DURATION_SECONDS,
-  TARGET_VIDEO_DURATION_MINUTES
+  TARGET_VIDEO_DURATION_MINUTES,
+  MAX_WORDS_PER_SCENE
 } from '../constants.ts';
 import { generateImageWithImagen } from './geminiService.ts';
 
