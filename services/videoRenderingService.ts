@@ -423,8 +423,6 @@ const drawRoundedRectPath = (
   ctx.closePath();
 };
 
-const easeInOutCubic = (value: number): number =>
-  value < 0.5 ? 4 * value * value * value : 1 - Math.pow(-2 * value + 2, 3) / 2;
 
 function drawKeywordChips(
   ctx: CanvasRenderingContext2D,
