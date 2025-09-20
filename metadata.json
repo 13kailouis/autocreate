@@ -1,0 +1,6 @@
+{
+  "name": "CineSynth",
+  "description": "An AI-powered web application that transforms text narrations into engaging videos. Features placeholder visuals for each scene based on keywords, subtitles, and a Text-to-Speech (TTS) narration preview. Users input narration, and the system handles scene segmentation, keyword extraction for placeholder images, subtitle creation, and video assembly for preview and WebM download.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}

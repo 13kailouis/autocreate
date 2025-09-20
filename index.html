@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>CineSynth</title>
+    <meta name="description" content="CineSynth turns text into engaging video using AI." />
+    <meta name="theme-color" content="#000000" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin" />
+    <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp" />
+    <script type="module" src="/tailwind.js"></script>
+    <style>
+      /* Custom scrollbar for a more modern look */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #333;
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #555;
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #777;
+      }
+
+      /* Simple glitch effect for headings */
+      .glitch {
+        position: relative;
+      }
+      .glitch::before,
+      .glitch::after {
+        content: attr(data-text);
+        position: absolute;
+        left: 0;
+        top: 0;
+        overflow: hidden;
+        clip: rect(0, 900px, 0, 0);
+      }
+      .glitch::before {
+        left: 2px;
+        text-shadow: -2px 0 magenta;
+        animation: glitchTop 2s infinite linear alternate-reverse;
+      }
+      .glitch::after {
+        left: -2px;
+        text-shadow: -2px 0 purple;
+        animation: glitchBottom 1.5s infinite linear alternate-reverse;
+      }
+      @keyframes glitchTop {
+        0% { clip: rect(0, 900px, 0, 0); }
+        50% { clip: rect(0, 900px, 100%, 0); }
+        100% { clip: rect(0, 900px, 0, 0); }
+      }
+      @keyframes glitchBottom {
+        0% { clip: rect(100%, 900px, 0, 0); }
+        50% { clip: rect(0, 900px, 0, 0); }
+        100% { clip: rect(100%, 900px, 0, 0); }
+      }
+
+      body.dynamic-bg {
+        background: linear-gradient(45deg, #000, #111, #000);
+        background-size: 400% 400%;
+        animation: bgShift 20s ease infinite;
+      }
+      @keyframes bgShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+      .no-scrollbar {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.1.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.3.0"
+  }
+}
+</script>
+  <!-- WebM Writer library removed -->
+</head>
+  <body class="bg-gradient-to-br from-neutral-900 via-neutral-800 to-black text-white antialiased dynamic-bg" style="font-family: 'Sora', sans-serif;">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
