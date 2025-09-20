@@ -4,8 +4,9 @@ import { Scene, AspectRatio } from '../types.ts';
 import { PlayIcon, PauseIcon, DownloadIcon } from './IconComponents.tsx';
 import { computePreviewPlaybackPlan, PREVIEW_MAX_TOTAL_DURATION_SECONDS } from '../services/renderTiming.ts';
 
-const FADE_DURATION_MS = 800; // Faster cross-fade for more dynamic feel
-const TRANSITION_EASING = 'cubic-bezier(0.4, 0, 0.2, 1)'; // More dynamic easing
+const FADE_DURATION_MS = 1200; // Smoother cross-fade for professional look
+const TRANSITION_EASING = 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'; // Ultra-smooth easing
+const TRANSITION_DELAY = 200; // Small delay for better timing
 
 interface ImageSlotState {
   scene: Scene | null;
@@ -196,16 +197,19 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
       return newSlots;
     });
 
-    animationTriggerFrameRef.current = requestAnimationFrame(() => {
-      setImageSlots(prevSlots => {
-        const newSlots = [...prevSlots] as [ImageSlotState, ImageSlotState];
-        if (newSlots[primarySlot].scene?.id === currentScene.id) {
-          newSlots[primarySlot].transform = targetCSSTransform;
-          newSlots[primarySlot].transition = `opacity ${FADE_DURATION_MS}ms ${TRANSITION_EASING}, transform ${kbConfig.animationDurationS}s cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
-        }
-        return newSlots;
+    // Add smooth transition with delay for better timing
+    setTimeout(() => {
+      animationTriggerFrameRef.current = requestAnimationFrame(() => {
+        setImageSlots(prevSlots => {
+          const newSlots = [...prevSlots] as [ImageSlotState, ImageSlotState];
+          if (newSlots[primarySlot].scene?.id === currentScene.id) {
+            newSlots[primarySlot].transform = targetCSSTransform;
+            newSlots[primarySlot].transition = `opacity ${FADE_DURATION_MS}ms ${TRANSITION_EASING}, transform ${kbConfig.animationDurationS}s cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
+          }
+          return newSlots;
+        });
       });
-    });
+    }, TRANSITION_DELAY);
 
     setElapsedTime(0);
     

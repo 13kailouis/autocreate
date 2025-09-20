@@ -215,6 +215,22 @@ const easeInOutQuart = (t: number): number => {
   return t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;
 };
 
+// Smooth bezier curves for professional video editing
+const smoothBezier = (t: number): number => {
+  return t * t * (3.0 - 2.0 * t); // Smoothstep function
+};
+
+const easeInOutExpo = (t: number): number => {
+  return t === 0 ? 0 : t === 1 ? 1 : t < 0.5 
+    ? Math.pow(2, 20 * t - 10) / 2 
+    : (2 - Math.pow(2, -20 * t + 10)) / 2;
+};
+
+// Hook curve for engaging content (starts fast, slows down)
+const hookCurve = (t: number): number => {
+  return 1 - Math.pow(1 - t, 3);
+};
+
 function drawImageWithKenBurns(
   ctx: CanvasRenderingContext2D,
   image: PreloadedImage,
@@ -231,26 +247,32 @@ function drawImageWithKenBurns(
   const initialXPercent = 0;
   const initialYPercent = 0;
 
-  // Apply enhanced easing for more dynamic movement
-  const easedProgress = easeInOutCubic(progressInScene);
-  const scaleProgress = easeOutQuart(progressInScene); // Different easing for scale
+  // Apply ultra-smooth easing for professional video editing
+  const easedProgress = smoothBezier(progressInScene);
+  const scaleProgress = easeInOutExpo(progressInScene); // Ultra-smooth scale
+  const movementProgress = hookCurve(progressInScene); // Hook curve for engagement
   
   const currentScale = initialScale + (kbConfig.targetScale - initialScale) * scaleProgress;
-  const currentXPercent = initialXPercent + (kbConfig.targetXPercent - initialXPercent) * easedProgress;
-  const currentYPercent = initialYPercent + (kbConfig.targetYPercent - initialYPercent) * easedProgress;
+  const currentXPercent = initialXPercent + (kbConfig.targetXPercent - initialXPercent) * movementProgress;
+  const currentYPercent = initialYPercent + (kbConfig.targetYPercent - initialYPercent) * movementProgress;
 
-  // Add subtle rotation for more dynamic effect
-  const rotationAngle = Math.sin(progressInScene * Math.PI) * 0.5; // Subtle rotation
+  // Add ultra-smooth rotation for cinematic effect
+  const rotationAngle = Math.sin(progressInScene * Math.PI * 2) * 0.3; // Smoother rotation
 
   const currentXTranslatePx = (canvasWidth * currentXPercent) / 100;
   const currentYTranslatePx = (canvasHeight * currentYPercent) / 100;
 
   ctx.save();
 
+  // Enable anti-aliasing and smoothing
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.textRenderingOptimization = 'optimizeQuality';
+
   const originPxX = canvasWidth * kbConfig.originXRatio;
   const originPxY = canvasHeight * kbConfig.originYRatio;
   
-  // Apply transformations with rotation
+  // Apply transformations with ultra-smooth rotation
   ctx.translate(originPxX, originPxY);
   ctx.rotate(rotationAngle * Math.PI / 180); // Convert to radians
   ctx.scale(currentScale, currentScale);
@@ -280,29 +302,49 @@ function drawImageWithKenBurns(
   
   // Add dynamic vignette effect that changes over time
   ctx.save();
-  const vignetteIntensity = 0.1 + Math.sin(progressInScene * Math.PI * 2) * 0.05; // Pulsing vignette
+  const vignetteIntensity = 0.08 + Math.sin(progressInScene * Math.PI * 2) * 0.03; // Smoother vignette
   const vignetteGradient = ctx.createRadialGradient(
     canvasWidth / 2, canvasHeight / 2, 0,
-    canvasWidth / 2, canvasHeight / 2, Math.max(canvasWidth, canvasHeight) * 0.8
+    canvasWidth / 2, canvasHeight / 2, Math.max(canvasWidth, canvasHeight) * 0.9
   );
   vignetteGradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
-  vignetteGradient.addColorStop(0.7, 'rgba(0, 0, 0, 0)');
+  vignetteGradient.addColorStop(0.8, 'rgba(0, 0, 0, 0)');
   vignetteGradient.addColorStop(1, `rgba(0, 0, 0, ${vignetteIntensity})`);
   ctx.fillStyle = vignetteGradient;
   ctx.fillRect(0, 0, canvasWidth, canvasHeight);
   ctx.restore();
   
-  // Add subtle color grading effect
+  // Add professional color grading effect
   ctx.save();
-  const colorGradingIntensity = 0.02 + Math.sin(progressInScene * Math.PI * 3) * 0.01;
+  const colorGradingIntensity = 0.015 + Math.sin(progressInScene * Math.PI * 2) * 0.008;
   const colorGradient = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight);
-  colorGradient.addColorStop(0, `rgba(255, 200, 100, ${colorGradingIntensity})`);
+  colorGradient.addColorStop(0, `rgba(255, 220, 120, ${colorGradingIntensity})`);
   colorGradient.addColorStop(0.5, `rgba(255, 255, 255, 0)`);
-  colorGradient.addColorStop(1, `rgba(100, 150, 255, ${colorGradingIntensity})`);
+  colorGradient.addColorStop(1, `rgba(120, 160, 255, ${colorGradingIntensity})`);
   ctx.fillStyle = colorGradient;
   ctx.globalCompositeOperation = 'overlay';
   ctx.fillRect(0, 0, canvasWidth, canvasHeight);
   ctx.restore();
+  
+  // Add hook effect - attention-grabbing elements
+  if (progressInScene < 0.1) {
+    // Opening hook - bright flash effect
+    ctx.save();
+    const hookIntensity = (1 - progressInScene * 10) * 0.1;
+    ctx.fillStyle = `rgba(255, 255, 255, ${hookIntensity})`;
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    ctx.restore();
+  }
+  
+  // Add engagement elements - subtle motion blur simulation
+  if (progressInScene > 0.8) {
+    ctx.save();
+    const blurIntensity = (progressInScene - 0.8) * 5 * 0.02;
+    ctx.filter = `blur(${blurIntensity}px) brightness(1.02)`;
+    ctx.globalAlpha = 0.3;
+    ctx.drawImage(image.source, dx, dy, dw, dh);
+    ctx.restore();
+  }
   
   ctx.restore();
 }
@@ -583,20 +625,34 @@ function drawSceneTextOverlay(
   ctx.shadowBlur = Math.round(fontSize * 0.6);
   ctx.shadowOffsetY = Math.round(fontSize * 0.25);
 
-  // Add subtle text animation
-  const textOffsetX = Math.sin(progressInScene * Math.PI * 3) * 2; // Subtle horizontal movement
-  const textOffsetY = Math.sin(progressInScene * Math.PI * 2) * 1; // Subtle vertical movement
+  // Add engaging text animation that prevents skipping
+  const textOffsetX = Math.sin(progressInScene * Math.PI * 2) * 1.5; // Smoother horizontal movement
+  const textOffsetY = Math.sin(progressInScene * Math.PI * 1.5) * 0.8; // Smoother vertical movement
+  
+  // Add attention-grabbing text effects
+  const textPulse = 1 + Math.sin(progressInScene * Math.PI * 4) * 0.05; // Subtle text pulse
+  const textGlow = progressInScene < 0.2 ? (1 - progressInScene * 5) * 0.3 : 0; // Opening glow
 
   trimmedLines.forEach((line, index) => {
     const y = overlayTop + basePadding + (index + 1) * lineHeight;
     const x = basePadding + accentBarWidth + basePadding * 0.6 + textOffsetX;
     const yPos = y + textOffsetY;
     
-    // Add word-by-word reveal effect
-    const wordRevealProgress = Math.min(1, (progressInScene - index * 0.1) * 2);
+    // Add word-by-word reveal effect with engagement
+    const wordRevealProgress = Math.min(1, (progressInScene - index * 0.08) * 1.5);
     if (wordRevealProgress > 0) {
-      ctx.globalAlpha = overlayAlpha * wordRevealProgress;
-      ctx.fillText(line, x, yPos);
+      ctx.globalAlpha = overlayAlpha * wordRevealProgress * textPulse;
+      
+      // Add opening glow effect
+      if (textGlow > 0) {
+        ctx.save();
+        ctx.shadowColor = `rgba(255, 255, 255, ${textGlow})`;
+        ctx.shadowBlur = 20;
+        ctx.fillText(line, x, yPos);
+        ctx.restore();
+      } else {
+        ctx.fillText(line, x, yPos);
+      }
     }
   });
   ctx.restore();

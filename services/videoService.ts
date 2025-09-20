@@ -26,23 +26,25 @@ const MAX_SCENE_PROCESSING_CONCURRENCY = 4;
 
 // Helper to generate Ken Burns configuration for a scene with viral YouTube-style effects
 const generateSceneKenBurnsConfig = (duration: number): KenBurnsConfig => {
-    // Faster, more dynamic scaling for viral appeal
-    const baseScale = 1.15 + Math.random() * 0.25; // 1.15 to 1.4 for more impact
-    const endScale = Math.min(1.5, baseScale + (duration > 6 ? 0.1 : 0)); // Shorter scenes get more zoom
+    // Ultra-smooth scaling for professional look
+    const baseScale = 1.08 + Math.random() * 0.15; // 1.08 to 1.23 for smooth zoom
+    const endScale = Math.min(1.3, baseScale + (duration > 8 ? 0.05 : 0)); // Gradual scaling
     
-    // More aggressive movement patterns for shorter scenes
-    const movementIntensity = duration > 6 ? 18 : 15; // More movement for all scenes
-    const endXPercent = (Math.random() - 0.5) * movementIntensity; // -9% to +9% or -7.5% to +7.5%
+    // Smooth movement patterns that follow the rule of thirds
+    const movementIntensity = duration > 8 ? 12 : 8; // Smoother movement
+    const endXPercent = (Math.random() - 0.5) * movementIntensity; // -6% to +6% or -4% to +4%
     const endYPercent = (Math.random() - 0.5) * movementIntensity;
     
-    // Strategic origin positioning for better composition
+    // Rule of thirds positioning for cinematic composition
     const originOptions = [
-        { x: 0.2, y: 0.2 }, // Top-left
-        { x: 0.8, y: 0.2 }, // Top-right  
-        { x: 0.2, y: 0.8 }, // Bottom-left
-        { x: 0.8, y: 0.8 }, // Bottom-right
-        { x: 0.5, y: 0.3 }, // Center-top
-        { x: 0.5, y: 0.7 }, // Center-bottom
+        { x: 0.33, y: 0.33 }, // Rule of thirds - top-left
+        { x: 0.67, y: 0.33 }, // Rule of thirds - top-right
+        { x: 0.33, y: 0.67 }, // Rule of thirds - bottom-left
+        { x: 0.67, y: 0.67 }, // Rule of thirds - bottom-right
+        { x: 0.5, y: 0.25 }, // Center-top
+        { x: 0.5, y: 0.75 }, // Center-bottom
+        { x: 0.25, y: 0.5 }, // Left-center
+        { x: 0.75, y: 0.5 }, // Right-center
     ];
     const selectedOrigin = originOptions[Math.floor(Math.random() * originOptions.length)];
 
