@@ -69,6 +69,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
   const [currentSceneIndex, setCurrentSceneIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [isPreviewReady, setIsPreviewReady] = useState(false);
 
   const [imageSlots, setImageSlots] = useState<[ImageSlotState, ImageSlotState]>([
     getDefaultSlotState(), getDefaultSlotState()
@@ -132,9 +133,11 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
       setActiveSlotIndex(0);
       setImageSlots([getDefaultSlotState(), getDefaultSlotState()]);
       setElapsedTime(0);
-      setIsPlaying(true); 
+      setIsPlaying(true);
+      setIsPreviewReady(true);
     } else if (scenes.length === 0 || isGenerating) {
       setIsPlaying(false);
+      setIsPreviewReady(false);
       onTTSStop(); 
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -424,7 +427,10 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
   if (scenes.length === 0 && !isGenerating) {
     return (
       <div className={`w-full bg-neutral-900 border border-neutral-700 rounded-lg shadow-lg flex items-center justify-center text-gray-500 ${aspectRatio === '16:9' ? 'aspect-video' : 'aspect-[9/16]'}`}>
-        Enter narration and click "Generate Video" to see preview.
+        <div className="text-center">
+          <div className="text-lg font-semibold mb-2">Ready to Create</div>
+          <div className="text-sm">Enter narration and click "Generate Video" to see preview</div>
+        </div>
       </div>
     );
   }
@@ -432,8 +438,9 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
   if (isGenerating && scenes.length === 0) {
      return (
       <div className={`w-full bg-neutral-900 border border-neutral-700 rounded-lg shadow-lg flex flex-col items-center justify-center text-gray-400 ${aspectRatio === '16:9' ? 'aspect-video' : 'aspect-[9/16]'}`}>
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mb-4"></div>
-        <p>Generating scenes & visuals...</p>
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-white border-t-transparent mb-4"></div>
+        <p className="text-lg font-semibold mb-2">Generating Video...</p>
+        <p className="text-sm text-gray-500">Creating your viral content</p>
       </div>
     );
   }
@@ -520,9 +527,12 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
         </div>
         <div className="text-xs sm:text-sm text-gray-400 truncate">
           {currentScene ? `Scene ${currentSceneIndex + 1}/${scenes.length}` : (scenes.length > 0 ? `Ready` : `No video`)}
-          {currentScene && isPlaying && ` (Preview ${formatSeconds(previewElapsedSeconds)}s / ${formatSeconds(previewSceneSeconds)}s${previewIsAccelerated ? ` · Original ${formatSeconds(originalSceneSeconds)}s` : ''})`}
+          {currentScene && isPlaying && ` (${formatSeconds(previewElapsedSeconds)}s / ${formatSeconds(previewSceneSeconds)}s${previewIsAccelerated ? ` · Original ${formatSeconds(originalSceneSeconds)}s` : ''})`}
           {currentScene && ttsPlaybackStatus === 'playing' && isTTSEnabled && <span className="ml-1 animate-pulse">(🔊)</span>}
           {!isPlaying && scenes.length > 0 && currentSceneIndex === scenes.length -1 && elapsedTime >= resolveSceneDurationMs(currentSceneIndex) && " Ended"}
+          <div className="text-xs text-gray-500 mt-1">
+            Total: {formatSeconds(previewTotalDurationSeconds)}s
+          </div>
         </div>
         <button
           onClick={onDownloadRequest}

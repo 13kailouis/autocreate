@@ -9,7 +9,7 @@ export interface SceneRenderPlanItem {
 }
 
 const PREVIEW_MIN_SCENE_DURATION_SECONDS = 0.75;
-export const PREVIEW_MAX_TOTAL_DURATION_SECONDS = 15;
+export const PREVIEW_MAX_TOTAL_DURATION_SECONDS = 300; // 5 minutes max for preview
 
 const clampDurationsWithMinimums = (
   durations: number[],
