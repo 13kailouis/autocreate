@@ -341,7 +341,7 @@ export class FastVideoRenderer {
           
           // Draw scene
           this.drawKenBurnsFast(images[sceneIndex], progressInScene, scene.kenBurnsConfig);
-          this.drawTextOverlayFast(scene, progressInScene);
+          // Removed text overlay for cleaner look
           this.drawWatermarkFast();
         }
 

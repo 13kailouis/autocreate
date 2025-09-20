@@ -236,7 +236,7 @@ export class InstantPreviewGenerator {
         try {
           const image = await this.loadImage(scene.footageUrl);
           this.drawKenBurnsEffect(image, progressInScene, scene.kenBurnsConfig);
-          this.drawTextOverlay(scene, progressInScene);
+          // Removed text overlay for cleaner look
           this.drawWatermark();
           
           // Create frame

@@ -751,7 +751,7 @@ const createStylizedFallbackImage = async (
   ctx.fill();
   ctx.restore();
 
-  drawSceneTextOverlay(ctx, scene, width, height, 1, accentColor);
+  // Removed subtitle overlay for cleaner look
 
   return convertCanvasToImage(canvas);
 };
@@ -1287,7 +1287,7 @@ const generateVideoWithWebCodecs = (
           throwIfAborted(signal);
           const progressInThisScene = numFramesForScene <= 1 ? 1 : frameIndex / (numFramesForScene - 1);
           drawImageWithKenBurns(ctx, img, canvasWidth, canvasHeight, progressInThisScene, scene.kenBurnsConfig);
-          drawSceneTextOverlay(ctx, scene, canvasWidth, canvasHeight, progressInThisScene, accentColor);
+          // Removed subtitle overlay for cleaner look
           if (options.includeWatermark) {
             drawWatermark(ctx, canvasWidth, canvasHeight, WATERMARK_TEXT);
           }
@@ -1655,7 +1655,7 @@ const generateWebMWithMediaRecorder = (
 
         try {
           drawImageWithKenBurns(ctx, preloadedImgData, canvasWidth, canvasHeight, progressInThisScene, scene.kenBurnsConfig);
-          drawSceneTextOverlay(ctx, scene, canvasWidth, canvasHeight, progressInThisScene, accentColor);
+          // Removed subtitle overlay for cleaner look
           if (options.includeWatermark) {
             drawWatermark(ctx, canvasWidth, canvasHeight, WATERMARK_TEXT);
           }

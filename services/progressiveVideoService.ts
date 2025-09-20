@@ -334,7 +334,7 @@ export class ProgressiveVideoGenerator {
           if (preloaded && preloaded.loaded) {
             const image = preloaded.bitmap || preloaded.image;
             this.drawKenBurns(image, progressInScene, scene.kenBurnsConfig);
-            this.drawTextOverlay(scene, progressInScene);
+            // Removed text overlay for cleaner look
             this.drawWatermark();
           }
         }
