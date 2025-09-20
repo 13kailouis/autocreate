@@ -25,13 +25,13 @@ const MAX_SCENE_PROCESSING_CONCURRENCY = 4;
 
 // Helper to generate Ken Burns configuration for a scene with viral YouTube-style effects
 const generateSceneKenBurnsConfig = (duration: number): KenBurnsConfig => {
-    // More dramatic scaling for viral appeal
-    const baseScale = 1.1 + Math.random() * 0.2; // 1.1 to 1.3 for more impact
-    const endScale = Math.min(1.4, baseScale + (duration > 10 ? 0.1 : 0)); // Longer scenes get more zoom
+    // Faster, more dynamic scaling for viral appeal
+    const baseScale = 1.15 + Math.random() * 0.25; // 1.15 to 1.4 for more impact
+    const endScale = Math.min(1.5, baseScale + (duration > 6 ? 0.1 : 0)); // Shorter scenes get more zoom
     
-    // More dynamic movement patterns
-    const movementIntensity = duration > 8 ? 15 : 12; // Longer scenes get more movement
-    const endXPercent = (Math.random() - 0.5) * movementIntensity; // -7.5% to +7.5% or -6% to +6%
+    // More aggressive movement patterns for shorter scenes
+    const movementIntensity = duration > 6 ? 18 : 15; // More movement for all scenes
+    const endXPercent = (Math.random() - 0.5) * movementIntensity; // -9% to +9% or -7.5% to +7.5%
     const endYPercent = (Math.random() - 0.5) * movementIntensity;
     
     // Strategic origin positioning for better composition
@@ -160,17 +160,17 @@ const estimateSceneDurationSeconds = (text: string): number => {
   const questionMarks = (normalized.match(/\?/g) ?? []).length;
   const exclamationMarks = (normalized.match(/!/g) ?? []).length;
 
-  // Enhanced rhythm calculation for better pacing
-  const rhythmPadding = sentenceBreaks * 0.8 + commaBreaks * 0.3 + newlineBreaks * 0.5;
-  const emphasisPadding = longWordCount * 0.08;
-  const questionPadding = questionMarks * 0.4; // Pause for questions
-  const excitementPadding = exclamationMarks * 0.3; // Pause for excitement
+  // Faster, more dynamic pacing for viral content
+  const rhythmPadding = sentenceBreaks * 0.4 + commaBreaks * 0.15 + newlineBreaks * 0.2;
+  const emphasisPadding = longWordCount * 0.05;
+  const questionPadding = questionMarks * 0.2; // Shorter pause for questions
+  const excitementPadding = exclamationMarks * 0.15; // Shorter pause for excitement
   
-  // Dynamic energy multiplier based on content complexity
-  const complexityFactor = Math.min(0.4, (sentenceBreaks + commaBreaks + newlineBreaks) * 0.04);
+  // Reduced complexity factor for faster pacing
+  const complexityFactor = Math.min(0.2, (sentenceBreaks + commaBreaks + newlineBreaks) * 0.02);
   const energyMultiplier = 1 + complexityFactor;
 
-  const estimated = (baseDuration + rhythmPadding + emphasisPadding + questionPadding + excitementPadding + 1.2) * energyMultiplier;
+  const estimated = (baseDuration + rhythmPadding + emphasisPadding + questionPadding + excitementPadding + 0.5) * energyMultiplier;
   const clamped = Math.min(
     MAX_SCENE_DURATION_SECONDS,
     Math.max(MIN_SCENE_DURATION_SECONDS, estimated),
@@ -224,9 +224,10 @@ const splitSceneTextByDuration = (text: string, maxDurationSeconds: number): str
   const sanitized = text.replace(/\s+/g, ' ').trim();
   if (!sanitized) return [];
 
-  const maxWordsPerScene = Math.max(
-    1,
-    Math.round(maxDurationSeconds * AVERAGE_WORDS_PER_SECOND * 0.92),
+  // Use the new MAX_WORDS_PER_SCENE constant for better control
+  const maxWordsPerScene = Math.min(
+    MAX_WORDS_PER_SCENE,
+    Math.max(8, Math.round(maxDurationSeconds * AVERAGE_WORDS_PER_SECOND * 0.85))
   );
   const sentenceMatches = sanitized.match(/[^.!?]+[.!?]?/g);
   const sentences = sentenceMatches ? sentenceMatches.map(s => s.trim()).filter(Boolean) : [sanitized];
@@ -246,8 +247,8 @@ const splitSceneTextByDuration = (text: string, maxDurationSeconds: number): str
   for (const sentence of sentences) {
     const sentenceWordCount = countWords(sentence);
 
-    if (sentenceWordCount >= maxWordsPerScene * 1.2) {
-      // Extremely long sentence - split by words directly
+    if (sentenceWordCount >= maxWordsPerScene * 1.1) {
+      // Long sentence - split by words directly for more scenes
       flushCurrent();
       const words = sentence.split(/\s+/).filter(Boolean);
       for (let start = 0; start < words.length; start += maxWordsPerScene) {

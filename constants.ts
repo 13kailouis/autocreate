@@ -1,10 +1,11 @@
 
 export const APP_TITLE = "CineSynth";
 export const DEFAULT_ASPECT_RATIO = '16:9';
-export const AVERAGE_WORDS_PER_SECOND = 2.2; // Slightly slower for better comprehension
-export const MAX_SCENE_DURATION_SECONDS = 25; // Allow longer scenes for detailed content
-export const MIN_SCENE_DURATION_SECONDS = 4; // Minimum for proper pacing
+export const AVERAGE_WORDS_PER_SECOND = 3.0; // Faster pace for better engagement
+export const MAX_SCENE_DURATION_SECONDS = 12; // Shorter scenes for better pacing
+export const MIN_SCENE_DURATION_SECONDS = 2; // Faster minimum for dynamic feel
 export const TARGET_VIDEO_DURATION_MINUTES = { MIN: 7, MAX: 17 }; // Target video length
+export const MAX_WORDS_PER_SCENE = 25; // Limit words per scene for better pacing
 
 export const FALLBACK_FOOTAGE_KEYWORDS = [
   "abstract", "cityscape", "nature", "technology", "office", "landscape", "motion graphics"

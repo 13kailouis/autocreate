@@ -219,8 +219,8 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
       const deltaTime = currentTime - lastFrameTimeRef.current;
       const totalElapsed = currentTime - startTime;
       
-      // More frequent updates for better synchronization (30ms instead of 50ms)
-      if (deltaTime >= 30) {
+      // More frequent updates for better synchronization (16ms for 60fps)
+      if (deltaTime >= 16) {
         currentElapsed = totalElapsed;
         
         // Ensure we don't exceed scene duration
